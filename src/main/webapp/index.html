@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <title>App Engine Demo</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="result">Loading...</div>
+
+    <script>
+/*$(document).ready(function() {
+  $.getJSON('/demo', function(data) {
+    $('#result').html("Hello, " + data.name);
+  });
+});*/
+
+      function getById() {
+        var id = $('#batchId').value();
+
+        $.getJSON('/batches?id=' + id, function(data) {
+          $('#batchHolder').html("name = " + data.name + " id = " + data.id);
+        });
+      }
+    </script>
+                   <!--http://reflecting-poet-101515.appspot.com/-->
+  <form method="post" action="/batches">
+    <label>Name:
+      <input name="name" type="text">
+    </label><br>
+    <label>Code count:
+      <input name="generateCodesCount" type="text">
+    </label><br>
+    <label>Start date
+      <input name="startDate" type="text">
+    </label><br>
+    <label>End date
+      <input name="endDate" type="text">
+    </label><br>
+    <label>Owner
+      <input name="owner" type="text">
+    </label><br>
+    <input type="submit" value="Create">
+  </form>
+
+  <br>
+  <br>
+  <input id="batchId" type="text">
+  <button id="getBatchById" onclick="getById">Get</button>
+
+  <br>
+  <br>
+  <div id="batchHolder"></div>
+
+
+
+  </body>
+</html>
