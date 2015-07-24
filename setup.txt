@@ -1,0 +1,2 @@
+publish to cloud:
+C:/dev/java/appengine-java-sdk-1.9.24/bin/appcfg.cmd -A reflecting-poet-101515 update target\appengine-try-java-1.0

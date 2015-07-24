@@ -20,9 +20,12 @@ public class EntityService {
         return datastore.get(KeyFactory.createKey(kind, id));
     }
 
-    public List<Entity> findAll(String kind) throws EntityNotFoundException {
+    public List<Entity> findAll(String kind, String sortBy, Query.SortDirection sortDirection) throws EntityNotFoundException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query q = new Query(kind);
+        if (sortBy != null) {
+            q.addSort(sortBy, sortDirection != null ? sortDirection : Query.SortDirection.ASCENDING);
+        }
         PreparedQuery pq = datastore.prepare(q);
         return pq.asList(FetchOptions.Builder.withDefaults());
     }

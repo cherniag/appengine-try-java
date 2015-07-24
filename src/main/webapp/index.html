@@ -1,57 +1,133 @@
 <!doctype html>
 <html>
-  <head>
+<head>
     <title>App Engine Demo</title>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  </head>
-  <body>
-    <div id="result">Loading...</div>
+    <script src="./jquery.min.js"></script>
+</head>
+<body>
 
-    <script>
-/*$(document).ready(function() {
-  $.getJSON('/demo', function(data) {
-    $('#result').html("Hello, " + data.name);
-  });
-});*/
+<style type="text/css" scoped="scoped">
+    #createBatchForm span {
+        width: 80px;
+        display: inline-block;
+    }
 
-      function getById() {
-        var id = $('#batchId').value();
+    .row div {
+        border: 1px solid grey;
+        width: 190px;
+        display: inline-block;
+    }
 
-        $.getJSON('/batches?id=' + id, function(data) {
-          $('#batchHolder').html("name = " + data.name + " id = " + data.id);
+    .row a {
+        border: 1px solid grey;
+        width: 190px;
+        display: inline-block;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        refreshBatches();
+    });
+
+    function refreshBatches() {
+        $.getJSON('/batches', function (data) {
+            $('#allBatches').html('<div class="row" style="font-weight: bold">' +
+            '<div>Id</div><div>Name</div><div>Code count</div><div>Create date</div><div>Start date</div><div>End date</div><div>Owner</div>' +
+            '</div>');
+
+            for (var i = 0; i < data.length; i++) {
+                $('#allBatches').append(
+                        '<div class="row">' +
+                            '<a data="' + data[i].id + '" href="#">' + data[i].id + '</a>' +
+                            '<div>' + data[i].name + '</div>' +
+                            '<div>' + data[i].generateCodesCount + '</div>' +
+                            '<div>' + data[i].createDate + '</div>' +
+                            '<div>' + data[i].startDate + '</div>' +
+                            '<div>' + data[i].endDate + '</div>' +
+                            '<div>' + data[i].owner + '</div>' +
+                        '</div>'
+                );
+            }
+
+            $('.row a').each(function () {
+                $(this).click(function () {
+                    getById($(this).attr('data'));
+                });
+            });
         });
-      }
-    </script>
-                   <!--http://reflecting-poet-101515.appspot.com/-->
-  <form method="post" action="/batches">
-    <label>Name:
-      <input name="name" type="text">
-    </label><br>
-    <label>Code count:
-      <input name="generateCodesCount" type="text">
-    </label><br>
-    <label>Start date
-      <input name="startDate" type="text">
-    </label><br>
-    <label>End date
-      <input name="endDate" type="text">
-    </label><br>
-    <label>Owner
-      <input name="owner" type="text">
-    </label><br>
-    <input type="submit" value="Create">
-  </form>
-
-  <br>
-  <br>
-  <input id="batchId" type="text">
-  <button id="getBatchById" onclick="getById">Get</button>
-
-  <br>
-  <br>
-  <div id="batchHolder"></div>
 
 
+    }
 
-  </body>
+    function getById(id) {
+        $.getJSON('/batches?id=' + id, function (data) {
+            $('#batchHolder').html(
+                    '<div>' + data.id + '</div>' +
+                    '<div>' + data.name + '</div>' +
+                    '<div>' + data.generateCodesCount + '</div>' +
+                    '<div>' + data.createDate + '</div>' +
+                    '<div>' + data.startDate + '</div>' +
+                    '<div>' + data.endDate + '</div>' +
+                    '<div>' + data.owner + '</div>'
+            );
+        });
+    }
+
+    function createBatch() {
+        $.ajax({
+            url: '/batches',
+            type: 'post',
+            dataType: 'json',
+            data: $('form#createBatchForm').serialize(),
+            success: function (data) {
+                refreshBatches();
+            },
+            error: function (data) {
+                refreshBatches();
+                //alert('Error ' + data);
+            }
+        });
+    }
+
+</script>
+
+<h4>Create batch</h4>
+
+
+<!--http://reflecting-poet-101515.appspot.com/-->
+<form method="post" action="/batches" id="createBatchForm">
+    <span>Name:</span>
+    <input name="name" type="text">
+    <br>
+    <span>Code count:</span>
+    <input name="generateCodesCount" type="text">
+    <br>
+    <span>Start date</span>
+    <input name="startDate" type="text">
+    <br>
+    <span>End date</span>
+    <input name="endDate" type="text">
+    <br>
+    <span>Owner</span>
+    <input name="owner" type="text">
+    <br>
+    <!--<input type="submit" value="Create">-->
+</form>
+<button onclick="createBatch()">Create</button>
+
+<br>
+<br>
+<br>
+<h4>All batches:</h4>
+
+<div id="allBatches"></div>
+
+<br>
+<h4>Batch details:</h4>
+
+<div id="batchHolder"></div>
+
+
+</body>
 </html>

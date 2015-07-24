@@ -2,6 +2,7 @@ package myapp;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Query;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +35,7 @@ public class BatchService {
     }
 
     public List<Batch> findAll() throws EntityNotFoundException {
-        List<Entity> all = entityService.findAll(KIND);
+        List<Entity> all = entityService.findAll(KIND, "createDate", Query.SortDirection.ASCENDING);
         List<Batch> batches = new ArrayList<Batch>();
         for (Entity entity : all) {
             batches.add(convert(entity));
@@ -44,7 +45,7 @@ public class BatchService {
 
     private Batch convert(Entity one) {
         return new Batch(
-                (Long)one.getProperty("id"),
+                one.getKey().getId(),
                 (String)one.getProperty("name"),
                 (Long)one.getProperty("generateCodesCount"),
                 (Date)one.getProperty("createDate"),
